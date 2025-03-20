@@ -5,11 +5,12 @@ frappe.ui.form.on('Sales Order', {
         }
     },
     
-    items_add: function(frm) {
+});
+frappe.ui.form.on('Sales Order Item', {
+    items_add: function(frm, cdt, cdn) {
         initSalesHistoryButtons(frm);
     },
-    
-    items_remove: function(frm) {
+    items_remove: function(frm, cdt, cdn) {
         initSalesHistoryButtons(frm);
     }
 });

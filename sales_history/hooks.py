@@ -1,6 +1,6 @@
 app_name = "sales_history"
 app_title = "Sales History"
-app_publisher = "Sanjuhs"
+app_publisher = "Sanjusha"
 app_description = "Sales History"
 app_email = "sanjushapp@gmail.com"
 app_license = "mit"
@@ -25,8 +25,8 @@ app_license = "mit"
 # ------------------
 
 # include js, css files in header of desk.html
-# app_include_css = "/assets/sales_history/css/sales_history.css"
-# app_include_js = "/assets/sales_history/js/sales_history.js"
+app_include_css = "/assets/sales_history/css/sales_history.css"
+app_include_js = "/assets/sales_history/js/sales_history.js"
 
 # include js, css files in header of web template
 # web_include_css = "/assets/sales_history/css/sales_history.css"

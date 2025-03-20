@@ -1,0 +1,19 @@
+.sales-history-info-btn {
+    cursor: pointer;
+    margin-right: 5px;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+}
+
+.sales-history-info-btn:hover {
+    opacity: 1;
+}
+
+.sales-history-table {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.sales-history-table table {
+    margin-bottom: 0;
+}

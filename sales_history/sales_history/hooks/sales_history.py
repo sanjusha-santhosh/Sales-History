@@ -10,54 +10,37 @@ def get_item_sales_history(item_code, customer=None, limit=5):
     
     limit = cint(limit) or 5
     
-    filters = {
-        "item_code": item_code,
-        "docstatus": 1  
-    }
+    query = f"""
+        SELECT 
+            sii.parent as invoice_no,
+            sii.qty,
+            sii.rate,
+            sii.amount,
+            si.posting_date,
+            si.customer_name,
+            IFNULL(si.currency, (SELECT value FROM `tabSingles` 
+                               WHERE doctype = 'Global Defaults' 
+                               AND field = 'default_currency')) as currency
+        FROM 
+            `tabSales Invoice Item` sii
+        JOIN 
+            `tabSales Invoice` si ON sii.parent = si.name
+        WHERE 
+            sii.item_code = %(item_code)s
+            AND sii.docstatus = 1
+        ORDER BY 
+            sii.creation DESC
+        LIMIT {limit}
+    """
+    result = frappe.db.sql(query, {"item_code": item_code}, as_dict=1)
     
-    
-    sales_items = frappe.get_all(
-        "Sales Invoice Item",
-        filters=filters,
-        fields=[
-            "parent as invoice_no",
-            "qty",
-            "rate",
-            "amount",
-            "creation"
-        ],
-        order_by="creation desc",
-        limit=limit
-    )
-    
-    if not sales_items:
-        return []
-    
-    invoice_list = list(set([item.invoice_no for item in sales_items]))
-    invoice_details = {}
-    
-    for invoice in frappe.get_all(
-        "Sales Invoice",
-        filters={"name": ["in", invoice_list]},
-        fields=["name", "posting_date", "customer", "customer_name", "currency"]
-    ):
-        
-        invoice_details[invoice.name] = invoice
-    
-    result = []
-    for item in sales_items:
-        invoice = invoice_details.get(item.invoice_no, {})
-        result.append({
-            "invoice_no": item.invoice_no,
-            "posting_date": invoice.get("posting_date", ""),
-            "customer_name": invoice.get("customer_name", ""),
-            "currency": invoice.get("currency", frappe.defaults.get_global_default("currency")),
-            "rate": flt(item.rate),
-            "qty": flt(item.qty),
-            "amount": flt(item.amount)
-        })
+    for row in result:
+        row["rate"] = flt(row["rate"])
+        row["qty"] = flt(row["qty"])
+        row["amount"] = flt(row["amount"])
     
     return result
+
 def get_customer_invoices(customer):
     return frappe.get_all(
         "Sales Invoice",
